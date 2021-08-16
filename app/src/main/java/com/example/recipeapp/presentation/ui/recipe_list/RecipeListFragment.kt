@@ -29,6 +29,7 @@ class RecipeListFragment : Fragment(),FoodCategoryChip, CircularIndeterminatePro
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -38,6 +39,8 @@ class RecipeListFragment : Fragment(),FoodCategoryChip, CircularIndeterminatePro
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+
        val theme = when(item.itemId){
             R.id.dark -> {
                 Log.d("Tag","Dark mode attached")
@@ -68,7 +71,6 @@ class RecipeListFragment : Fragment(),FoodCategoryChip, CircularIndeterminatePro
         Log.d("Tag", "OnCreateView: ${viewModel}")
 
 
-
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_recipe_list, container, false)
 
@@ -77,6 +79,7 @@ class RecipeListFragment : Fragment(),FoodCategoryChip, CircularIndeterminatePro
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         toolbar.inflateMenu(R.menu.menu)//To inflate the toolbar with Menu items
+        (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
 
         viewModel.loading.observe(viewLifecycleOwner,{
             Log.d("Tag", "Loading value: ${viewModel.loading.value}")
