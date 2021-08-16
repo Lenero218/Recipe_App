@@ -1,0 +1,31 @@
+package com.example.recipeapp.di
+
+import android.content.Context
+import com.example.recipeapp.presentation.BaseApplication
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class) //Application Component is removed
+object AppModule {
+    @Singleton
+    @Provides
+    fun providesApplication(@ApplicationContext app: Context): BaseApplication {
+        return app as BaseApplication
+    }
+
+
+
+
+
+
+
+
+
+
+
+}

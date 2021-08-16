@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/default1"
+        android:icon="@drawable/ic_baseline_miscellaneous_services_24"
+        android:title="DEFAULT" />
+    <item
+        android:id="@+id/light"
+        android:icon="@drawable/ic_baseline_wb_sunny_24"
+        android:title="LIGHT" />
+    <item
+        android:id="@+id/dark"
+        android:icon="@drawable/ic_baseline_nightlight_24"
+        android:title="DARK" />
+</menu>
