@@ -11,6 +11,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.recipeapp.R
 import com.example.recipeapp.presentation.ui.Adapter
 import com.example.recipeapp.presentation.ui.Animations.CircularIndeterminateProgressBar
@@ -25,6 +26,9 @@ class RecipeListFragment : Fragment(),FoodCategoryChip, CircularIndeterminatePro
 
 
     val viewModel: RecipeListViewModel by viewModels()
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,11 +108,17 @@ class RecipeListFragment : Fragment(),FoodCategoryChip, CircularIndeterminatePro
 //                val topSpacingItemDecoration = TopSpacingItemDecoration(30)
 //                addItemDecoration(topSpacingItemDecoration)
                 adapter = recyclerAdapter
-                
+//                viewModel.onChangeRecipeScrollPosition(recyclerAdapter.postion)
+
+
+
+
 
             }
 
         })
+
+
 
 
 
@@ -299,6 +309,16 @@ class RecipeListFragment : Fragment(),FoodCategoryChip, CircularIndeterminatePro
         }
     }
 
-
+        private fun setRecyclerViewScrollListener() {
+            val scrollListener = object : RecyclerView.OnScrollListener(){
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    val totalItemCount = recyclerView!!.layoutManager?.itemCount
+                    viewModel.onChangeRecipeScrollPosition(totalItemCount!!)
+                   //Complete this function using coding with mitch
+                    
+                }
+            }
+        }
 
 }

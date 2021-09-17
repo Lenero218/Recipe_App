@@ -13,12 +13,13 @@ import kotlinx.android.synthetic.main.recipe_list.view.*
 class Adapter(
         private val RecipeList: List<Recipe>
 ) :RecyclerView.Adapter<Adapter.ViewHolder>(){
-
+    var postion:Int = 0
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val imageView = itemView.image
         val rating = itemView.rating1
         val title = itemView.itemName
         val publisher = itemView.publisher
+
 
         init {
             itemView.setOnClickListener { v: View ->
@@ -47,6 +48,7 @@ class Adapter(
 //                Log.d("Tag", "Adapter checking ${holder.bind(RecipeList.get(position))}")
 //            }
 //        }
+        postion = position
         val requestOptions = RequestOptions()
             .placeholder(R.drawable.resource_default)
             .error(R.drawable.resource_default)
