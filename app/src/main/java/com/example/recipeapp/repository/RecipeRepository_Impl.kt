@@ -5,8 +5,8 @@ import com.example.recipeapp.network.RecipeService
 import com.example.recipeapp.network.model.RecipeDtoMapper
 
 class RecipeRepository_Impl(
-        private val recipeService: RecipeService,  //Get and Search requests
-        private val mapper: RecipeDtoMapper
+    private val recipeService: RecipeService,  //Get and Search requests
+    private val mapper: RecipeDtoMapper
 ): RecipeRepository {
     override suspend fun search(token: String, page: Int, query: String): List<Recipe> {
       val result = recipeService.search(token, page, query).recipes //This will return all the recipes network entities

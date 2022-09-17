@@ -85,12 +85,12 @@ class RecipeListFragment : Fragment(),FoodCategoryChip, CircularIndeterminatePro
         toolbar.inflateMenu(R.menu.menu)//To inflate the toolbar with Menu items
         (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
 
-        viewModel.loading.observe(viewLifecycleOwner,{
+        viewModel.loading.observe(viewLifecycleOwner,{ltrue->
             Log.d("Tag", "Loading value: ${viewModel.loading.value}")
 
-            CircularIndeterminateProgressBarDisplayed(isDisplay = it)
+            CircularIndeterminateProgressBarDisplayed(isDisplay = ltrue)
 
-            IsShimmerEffectOn(isDisplayed = it)
+            IsShimmerEffectOn(isDisplayed = ltrue)
 
         })
 

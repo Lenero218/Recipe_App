@@ -44,6 +44,7 @@ constructor(
     }
 
    fun newSearch(query : String) {
+
           viewModelScope .launch {
             _loading.value = true
 
