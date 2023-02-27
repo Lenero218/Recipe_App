@@ -70,15 +70,19 @@ constructor(
                     Log.d("Tag", "Next Page: ${page_.value}")
                     delay(1000)
                     if(page_.value!! > 1){
-                        val result = Repository.search(
+                        val result = (if(_query.value!=null){_query.value}else{""})?.let {
+                            Repository.search(
                                 token = token,
                                 page = page_.value!!,
-                                query =  _query.value!!
+                                query = it
 
 
-                        )
+                            )
+                        }
                         Log.d("Tag", "NextPage: ${result}")
-                        appendRecipe(result)
+                        if (result != null) {
+                            appendRecipe(result)
+                        }
                     }
                 _loading.value = false
             }
@@ -96,7 +100,7 @@ constructor(
     }
 
     private fun incrementPage(){
-        page_  .value = page_.value?.plus(1)
+        page_.value = page_.value?.plus(1)
     }
 
     fun onChangeRecipeScrollPosition(position: Int){

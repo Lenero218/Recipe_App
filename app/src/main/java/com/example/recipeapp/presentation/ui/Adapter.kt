@@ -1,17 +1,24 @@
 package com.example.recipeapp.presentation.ui
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.recipeapp.R
 import com.example.recipeapp.domain.model.Recipe
+import com.example.recipeapp.presentation.ui.recipe_list.RecipeListFragment
+import com.example.recipeapp.presentation.ui.recipe_list.RecipeListFragment.Companion.scrolledState
+import com.example.recipeapp.presentation.ui.recipe_list.RecipeListViewModel
 import kotlinx.android.synthetic.main.recipe_list.view.*
 
 class Adapter(
-        private val RecipeList: List<Recipe>
+        private val RecipeList: List<Recipe>,
+
 ) :RecyclerView.Adapter<Adapter.ViewHolder>(){
     var postion:Int = 0
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -53,7 +60,7 @@ class Adapter(
             .placeholder(R.drawable.resource_default)
             .error(R.drawable.resource_default)
 
-        var curr = RecipeList.get(position)
+        var curr = RecipeList.get(postion)
 
         curr.publisher?.let{
             holder.publisher.setText(it.capitalize())//To capitalise the fisrt letter of the text
@@ -74,9 +81,14 @@ class Adapter(
         }
 
 
+        Log.d("Position","The value is : ${holder.adapterPosition}")
+        scrolledState = holder.adapterPosition
 
+        Log.d("Scrolled","ScrolledValue : ${scrolledState}")
 
-
+        holder.itemView.setOnClickListener {
+            onItemClickListener?.let { it(curr) }
+        }
 
 
 
@@ -85,4 +97,11 @@ class Adapter(
     }
 
     override fun getItemCount() = RecipeList.size
+
+    private var onItemClickListener : ((Recipe) -> Unit)? = null
+
+    fun setOnItemClickListener(listener : (Recipe) -> Unit){
+        onItemClickListener = listener
+    }
+
 }

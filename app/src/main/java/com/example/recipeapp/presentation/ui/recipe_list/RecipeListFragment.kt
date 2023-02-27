@@ -1,14 +1,17 @@
 package com.example.recipeapp.presentation.ui.recipe_list
 
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
 import android.view.*
+import android.widget.AbsListView
 import androidx.fragment.app.Fragment
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,6 +30,10 @@ class RecipeListFragment : Fragment(),FoodCategoryChip, CircularIndeterminatePro
 
     val viewModel: RecipeListViewModel by viewModels()
 
+    companion object{
+        var scrolledState : Int = 0
+    }
+
 
 
 
@@ -34,6 +41,11 @@ class RecipeListFragment : Fragment(),FoodCategoryChip, CircularIndeterminatePro
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
+
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -96,6 +108,7 @@ class RecipeListFragment : Fragment(),FoodCategoryChip, CircularIndeterminatePro
 
 
 
+
         //Setting the adapter
         viewModel.recipes.observe(viewLifecycleOwner, { recipes ->
             //   In this we will write the whole code to get the data
@@ -108,12 +121,26 @@ class RecipeListFragment : Fragment(),FoodCategoryChip, CircularIndeterminatePro
 //                val topSpacingItemDecoration = TopSpacingItemDecoration(30)
 //                addItemDecoration(topSpacingItemDecoration)
                 adapter = recyclerAdapter
+                addOnScrollListener(this@RecipeListFragment.scrollListener)
 //                viewModel.onChangeRecipeScrollPosition(recyclerAdapter.postion)
+                (viewModel.page_.value?.times(PAGE_SIZE))?.minus(PAGE_SIZE)
+                    ?.let { scrollToPosition(it) }
 
 
 
 
 
+
+            }
+
+            recyclerAdapter.setOnItemClickListener {
+                val bundle = Bundle().apply {
+                    putParcelable("recipe",it)
+                }
+                findNavController().navigate(
+                    R.id.action_recipeListFragment_to_recipe_Fragment,
+                    bundle
+                )
             }
 
         })
@@ -309,16 +336,54 @@ class RecipeListFragment : Fragment(),FoodCategoryChip, CircularIndeterminatePro
         }
     }
 
-        private fun setRecyclerViewScrollListener() {
-            val scrollListener = object : RecyclerView.OnScrollListener(){
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+    override fun onResume() {
+        super.onResume()
+        recycler_View.scrollToPosition(scrolledState)
+    }
+
+            //For scrolling
+
+            var isLoading = false
+            var isScrolling = false
+            var isLastPage = false
+
+             val scrollListener = object : RecyclerView.OnScrollListener(){
+
+                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+
                     super.onScrollStateChanged(recyclerView, newState)
-                    val totalItemCount = recyclerView!!.layoutManager?.itemCount
-                    viewModel.onChangeRecipeScrollPosition(totalItemCount!!)
-                   //Complete this function using coding with mitch
+
+                     if(newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
+                         isScrolling = true
+                     }
+
+
+
                     
                 }
+
+                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                     super.onScrolled(recyclerView, dx, dy)
+
+                     val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                     val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+                     val visibleItemCount = layoutManager.childCount
+                     val totatItemCount = layoutManager.itemCount
+                     viewModel.onChangeRecipeScrollPosition(totatItemCount)
+
+                     val isNotLoadingAndNotLastPage = !isLoading && !isLastPage
+
+                     val isAtLastItem = firstVisibleItemPosition + visibleItemCount >= totatItemCount
+                     val isNotBeginning = firstVisibleItemPosition >=0
+                     val isTotalMoreThanVisible = totatItemCount >= PAGE_SIZE
+                     val shouldPaginate = isNotLoadingAndNotLastPage && isAtLastItem && isNotBeginning && isTotalMoreThanVisible && isScrolling
+
+                     if(shouldPaginate){
+                         viewModel.nextPage()
+                     }
+                 }
+
             }
-        }
+
 
 }
